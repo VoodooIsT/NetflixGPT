@@ -2,6 +2,9 @@ import React, { useRef, useState } from 'react'
 import Header from './Header'
 import Footer from './common/Footer'
 import { chaekValidation } from '../utils/validation';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../utils/firebase';
 
 const Login = () => {
 
@@ -14,6 +17,36 @@ const Login = () => {
     const handleButtonClick = () => {
         const message = chaekValidation(email.current.value, password.current.value);
         setErrMsg(message);
+        if(message) return;
+
+        //Sign In Sign Up logic
+        if(!isSignInForm) {
+            //Signup
+            createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+            .then((userCredential) => {
+                const user = userCredential.user
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setErrMsg(errorCode + "-" +  errorMessage)
+            })
+
+
+        } else {
+            //Sign in
+            signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                // ...
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setErrMsg(errorCode + "-" + errorMessage);  
+            });
+        }
     }
 
     const toggleSignInForm = () => {
@@ -24,7 +57,7 @@ const Login = () => {
     <div>
         <Header />
         <div className='absolute'>
-            <img src="https://assets.nflxext.com/ffe/siteui/vlv3/f85718e8-fc6d-4954-bca0-f5eaf78e0842/ea44b42b-ba19-4f35-ad27-45090e34a897/IN-en-20230918-popsignuptwoweeks-perspective_alpha_website_medium.jpg" alt="hero" className=''/> 
+            <img src="https://assets.nflxext.com/ffe/siteui/vlv3/f85718e8-fc6d-4954-bca0-f5eaf78e0842/ea44b42b-ba19-4f35-ad27-45090e34a897/IN-en-20230918-popsignuptwoweeks-perspective_alpha_website_medium.jpg" alt="hero"/>
         </div>
         <form onSubmit={(e) => e.preventDefault()} className='bg-[#000000BF] p-12 absolute w-3/12 my-36 mx-auto right-0 left-0 flex flex-col shadow-4xl'>
             <h1 className='font-semibold text-white text-3xl mb-5'>{!isSignInForm? "Sign Up": "Sign In"}</h1>
