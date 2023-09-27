@@ -2,17 +2,23 @@ import React, { useRef, useState } from 'react'
 import Header from './Header'
 import Footer from './common/Footer'
 import { chaekValidation } from '../utils/validation';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../utils/firebase';
-
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { addUser } from '../utils/slices/userSlice';
 const Login = () => {
+
+    const navigate = useNavigate();
 
     const [isSignInForm, setIsSignInForm] = useState(true);
     const [errMsg, setErrMsg] = useState(null);
-
+    
     const email = useRef(null);
     const password = useRef(null);
+    const name = useRef(null);
+    const dispatch = useDispatch()
 
     const handleButtonClick = () => {
         const message = chaekValidation(email.current.value, password.current.value);
@@ -24,14 +30,27 @@ const Login = () => {
             //Signup
             createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
             .then((userCredential) => {
-                const user = userCredential.user
+                const user = userCredential.user;
+                updateProfile(user, {
+                    displayName: name.current.value,
+                  }).then(() => {
+                    // Profile updated!
+                    const { uid, email, displayName} = auth.currentUser;
+                    dispatch(addUser({uid: uid, email: email, displayName: displayName}));
+                    navigate('/browser')
+                    // ...
+                  }).catch((error) => {
+                    // An error occurred
+                    setErrMsg(error.message);
+                    // ...
+                  });
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 setErrMsg(errorCode + "-" +  errorMessage)
             })
-
+    
 
         } else {
             //Sign in
@@ -46,6 +65,8 @@ const Login = () => {
                 const errorMessage = error.message;
                 setErrMsg(errorCode + "-" + errorMessage);  
             });
+
+            navigate('/browser')
         }
     }
 
@@ -63,7 +84,7 @@ const Login = () => {
             <h1 className='font-semibold text-white text-3xl mb-5'>{!isSignInForm? "Sign Up": "Sign In"}</h1>
             {
                 !isSignInForm && (
-                    <input type="text" placeholder='Full Name' className='p-4 my-2  bg-[#333333] rounded-sm px-[20px] py-[16px] text-[#ffff]'/>
+                    <input ref={name} type="text" placeholder='Full Name' className='p-4 my-2  bg-[#333333] rounded-sm px-[20px] py-[16px] text-[#ffff]'/>
                 )
             }
             <input ref={email} type="email" name="email" id="email" placeholder='Email or phone number' required className='p-4 my-2 w-full  bg-[#333333] rounded-sm px-[20px] py-[16px] text-[#ffff]' />
