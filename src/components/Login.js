@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { addUser } from '../utils/slices/userSlice';
 const Login = () => {
 
-    const navigate = useNavigate();
 
     const [isSignInForm, setIsSignInForm] = useState(true);
     const [errMsg, setErrMsg] = useState(null);
@@ -37,7 +36,6 @@ const Login = () => {
                     // Profile updated!
                     const { uid, email, displayName} = auth.currentUser;
                     dispatch(addUser({uid: uid, email: email, displayName: displayName}));
-                    navigate('/browser')
                     // ...
                   }).catch((error) => {
                     // An error occurred
@@ -66,7 +64,7 @@ const Login = () => {
                 setErrMsg(errorCode + "-" + errorMessage);  
             });
 
-            navigate('/browser')
+    
         }
     }
 

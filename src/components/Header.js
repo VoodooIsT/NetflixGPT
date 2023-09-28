@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
 import useOnClickOutside from "../hooks/useOnClickOutside"
 import { AiOutlineCaretDown } from "react-icons/ai"
 import {VscSignOut} from 'react-icons/vsc'
+import { addUser, removeUser } from '../utils/slices/userSlice';
 // import ProfileDropdown from './common/ProfileDropDown';
 
 const Header = () => {
@@ -14,17 +15,33 @@ const Header = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
+  const dispatch = useDispatch()
 
   useOnClickOutside(ref, () => setOpen(false))
 
   const handleSignout = () => {
     signOut(auth).then(() => {
-      navigate('/')
     })
     .catch(() => {
       navigate("/error")
     })
   }
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const {uid, email, displayName} = user;
+          dispatch(addUser({uid: uid, email: email, displayName: displayName}));
+          navigate('/browser')
+          // ...
+        } else {
+          // User is signed out
+          // ...
+          dispatch(removeUser())
+          navigate('/')
+        }
+      });
+   }, [])
 
 
   return ( 
@@ -36,7 +53,7 @@ const Header = () => {
                 <button className="relative" onClick={() => setOpen(true)}>
       <div className="flex items-center gap-x-1">
       <img src="https://occ-0-4344-2186.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABY20DrC9-11ewwAs6nfEgb1vrORxRPP9IGmlW1WtKuaLIz8VxCx5NryzDK3_ez064IsBGdXjVUT59G5IRuFdqZlCJCneepU.png?r=229" alt=""  className=''/>
-        <AiOutlineCaretDown className="text-sm text-richblack-100" />
+        <AiOutlineCaretDown className="text-sm text-white" />
       </div>
       {open && (
         <div
