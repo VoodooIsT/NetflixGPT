@@ -21,6 +21,6 @@ const Body = () => {
         <RouterProvider router={appStore}/>
     </div>
   )
-}
+};
 
 export default Body

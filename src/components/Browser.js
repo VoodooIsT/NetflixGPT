@@ -2,16 +2,17 @@ import React, { useEffect } from 'react'
 import Header from './Header'
 import useNowPlayingMovies from '../hooks/useNowPlayingMovies'
 import MainContainer from './MainContainer';
+import SecondaryContainer from './SecondaryContainer';
 
 const Browser = () => {
 
   useNowPlayingMovies();
 
   return (
-    <div className='flex justify-between'>
+    <div>
       <Header />
       <MainContainer />
-      
+      <SecondaryContainer />
     </div>
   )
 }
