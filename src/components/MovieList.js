@@ -17,7 +17,7 @@ const MovieList = ({title, movies}) => {
                {title}
         </h1>
         <Swiper
-          slidesPerView={1}
+          slidesPerView={2}
           spaceBetween={25}
           navigation={true}
           loop={true}
