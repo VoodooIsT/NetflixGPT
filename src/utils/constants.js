@@ -13,4 +13,4 @@ export const API_OPTIONS =  {
     { identifier : "hindi", name: "Hindi"}
   ]
 
-  export const OPENAI_KEY = "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";
+  export const OPENAI_KEY = process.env.REACT_APP_OPENAI_KEY;
