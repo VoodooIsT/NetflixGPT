@@ -21,6 +21,7 @@ const Header = () => {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   const dispatch = useDispatch()
+  const showGptSearch = useSelector((store) => store.GPT.showGptSearch);
 
   useOnClickOutside(ref, () => setOpen(false))
 
@@ -91,7 +92,9 @@ const Header = () => {
               </select>
               
               <div>
-                <button onClick={handleSearchBtn} className='bg-purple-800 p-2 px-6 rounded-md text-white'>Search GPT</button>
+                <button onClick={handleSearchBtn} className='bg-purple-800 p-2 px-6 rounded-md text-white'>
+                {showGptSearch ? "Homepage" : "GPT Search"}
+                </button>
               </div>
                 <button className="relative" onClick={() => setOpen(true)}>
       <div className="flex items-center gap-x-1">
