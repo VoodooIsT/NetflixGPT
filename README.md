@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# It is an NetflixGPT made by Abhishek Shukla
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
